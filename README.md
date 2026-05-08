@@ -10,57 +10,84 @@ It demonstrates how raw operational data can be transformed into actionable busi
 
 ## Tech Stack
 
-- **Language:** Python (Pandas, Faker, SQLAlchemy)
+- **Language:** Python (Pandas, Faker)
 - **Database:** PostgreSQL
 - **Analytics:** SQL
-- **Visualization:** Power BI
+- **Visualization:** Excel (PivotTables, Dashboards)
 - **Version Control:** Git/GitHub
 
 ---
 
 ## System Architecture
 
-1. **Data Generation:** Synthetic ticket data created via Python (Faker).
-2. **Storage:** Data saved to CSV for auditability.
-3. **Ingestion:** Automated pipeline loads CSV data into a PostgreSQL database.
-4. **Analytics:** Structured SQL queries calculate business KPIs (SLA rates, Agent speed).
-5. **Reporting:** (In Progress) Power BI dashboard for executive visualization.
+1. **Data Generation:** Synthetic ticket data created using Python (Faker)
+2. **Storage Layer:** CSV used as intermediate structured dataset
+3. **Database Ingestion:** Python script loads data into PostgreSQL
+4. **Analytics Layer:** SQL queries generate KPIs and operational insights
+5. **Reporting Layer:** Excel dashboard with PivotTables and slicers for analysis
 
 ---
 
-## Key Business Metrics Analyzed
+## Key Business Metrics
 
-- **SLA Breach Rate:** Percentage of tickets missing their resolution deadline.
-- **Workload Drivers:** Ticket volume categorized by priority and department.
-- **Agent Efficiency:** Average resolution time per agent vs. breach counts.
-- **Trend Analysis:** Daily ticket volume spikes and operational load.
+- SLA Breach Rate (compliance monitoring)
+- Ticket volume by priority and category
+- Agent performance (resolution time and workload distribution)
+- Operational trends over time (daily ticket volume)
 
 ---
 
-## How to Run
+## How to Run Project
 
-1. **Install dependencies:**
+### 1. Install dependencies
 
-   ```bash
-   pip install -r requirements.txt
+```bash
+pip install -r requirements.txt
+```
 
-   ```
+---
 
-2. **Install dependencies:**
+### 2. Generate synthetic dataset
 
-   ```bash
-   python scripts/generate_data.py
+```bash
+python scripts/generate_data.py
+```
 
-   ```
+---
 
-3. **Load data into PostgreSQL:**
+### 3. Load data into PostgreSQL
 
-   ```bash
-   python scripts/load_to_db.py
+```bash
+python scripts/load_to_db.py
+```
 
-   ```
+---
 
-4. **Run SQL analytics:**
-   ```bash
-   Refer to scripts/analytics_queries.sql for KPI logic.
-   ```
+### 4. Run SQL analytics
+
+See:
+
+```
+sql/analytics_queries.sql
+```
+
+---
+
+### 5. Excel Dashboard
+
+Open:
+
+```
+excel/ticket_analytics_dashboard.xlsx
+```
+
+---
+
+## What This Project Demonstrates
+
+- End-to-end data pipeline design
+- SQL-based business analytics
+- Database integration (PostgreSQL)
+- Data cleaning and transformation
+- KPI-driven reporting systems
+- Excel-based operational dashboards
