@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: public
+    tables:
+      - name: tickets
+        description: "Raw ticket data loaded from CSV"
+        columns:
+          - name: ticket_id
+            tests:
+              - unique
+              - not_null

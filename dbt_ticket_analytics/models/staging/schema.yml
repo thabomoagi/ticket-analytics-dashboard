@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: stg_tickets
+    description: "Cleaned and enriched ticket data from raw source"
+    columns:
+      - name: ticket_id
+        description: "Unique identifier for each support ticket"
+        tests:
+          - unique
+          - not_null
+      - name: created_date
+        description: "Timestamp when the ticket was created"
+      - name: resolved_date
+        description: "Timestamp when the ticket was resolved"
+      - name: priority
+        description: "Ticket priority level"
+      - name: status
+        description: "Current ticket status"
+      - name: category
+        description: "Ticket category (e.g., Billing, Network issue)"
+      - name: assigned_agent
+        description: "Agent assigned to handle the ticket"
+      - name: resolution_hours
+        description: "Hours taken to resolve the ticket"
+      - name: is_it_late
+        description: "Boolean flag indicating SLA breach"
+      - name: priority_order
+        description: "Numeric priority for sorting (1=Critical, 4=Low)"
+      - name: created_day_of_week
+        description: "Day of week ticket was created (0=Sunday)"
+      - name: created_hour
+        description: "Hour of day ticket was created"

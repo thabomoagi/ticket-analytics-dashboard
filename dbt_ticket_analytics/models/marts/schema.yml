@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: fct_ticket_performance
+    description: "Clean ticket data with SLA status and time dimensions"
+    columns:
+      - name: ticket_id
+        tests:
+          - unique
+          - not_null
+      - name: priority
+        tests:
+          - accepted_values:
+              values: ['Low', 'Medium', 'High', 'Critical']
+      - name: sla_status
+        tests:
+          - accepted_values:
+              values: ['Met', 'Breached']
+      - name: resolution_hours
+        tests:
+          - not_null
+      - name: assigned_agent
+        tests:
+          - not_null
+
+  - name: dim_agent_performance
+    description: "Aggregated agent performance metrics"
+    columns:
+      - name: assigned_agent
+        tests:
+          - unique
+          - not_null
+      - name: total_tickets
+        tests:
+          - not_null
+      - name: avg_resolution_time
+        tests:
+          - not_null
+      - name: sla_breach_rate
+        tests:
+          - not_null
+
+  - name: dim_category_trends
+    description: "Category and priority level trend analysis"
+    columns:
+      - name: category
+        tests:
+          - not_null
+      - name: priority
+        tests:
+          - accepted_values:
+              values: ['Low', 'Medium', 'High', 'Critical']
+      - name: ticket_count
+        tests:
+          - not_null
+      - name: avg_resolution_time
+        tests:
+          - not_null
+
+  - name: dim_daily_trends
+    description: "Daily time-series metrics for operational reporting"
+    columns:
+      - name: ticket_date
+        tests:
+          - unique
+          - not_null
+      - name: tickets_created
+        tests:
+          - not_null
+      - name: sla_breach_rate
+        tests:
+          - not_null

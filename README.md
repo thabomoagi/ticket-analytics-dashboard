@@ -1,93 +1,152 @@
-# Ticket Analytics Dashboard (End-to-End Data Pipeline)
+# Ticket Analytics Data Pipeline
 
 ## Project Overview
 
-This project simulates a real-world IT support ticketing system and builds an end-to-end data pipeline for analytics and operational reporting.
+An end-to-end analytics engineering project that transforms raw IT support ticket data into production-ready business intelligence models. Built to demonstrate modern data stack practices: data generation, transformation, testing, documentation, and operational reporting.
 
-It demonstrates how raw operational data can be transformed into actionable business insights using **Python, SQL, and PostgreSQL**. The goal is to replicate how companies track support performance, SLA compliance, and team efficiency.
+This project simulates a real-world support ticketing system and applies analytics engineering best practices using **dbt, PostgreSQL, and Python**.
 
 ---
 
 ## Tech Stack
 
-- **Language:** Python (Pandas, Faker)
-- **Database:** PostgreSQL
-- **Analytics:** SQL
-- **Visualization:** Excel (PivotTables, Dashboards)
-- **Version Control:** Git/GitHub
+| Layer           | Tool                                        |
+| --------------- | ------------------------------------------- |
+| Data Generation | Python (Faker, Pandas)                      |
+| Database        | PostgreSQL                                  |
+| Transformation  | dbt (data build tool)                       |
+| Testing         | dbt built-in + custom SQL tests             |
+| Documentation   | dbt auto-generated docs                     |
+| Visualization   | Power BI / Tableau (connected to dbt marts) |
+| Version Control | Git / GitHub                                |
 
 ---
 
-## System Architecture
+## Data Architecture
 
-1. **Data Generation:** Synthetic ticket data created using Python (Faker)
-2. **Storage Layer:** CSV used as intermediate structured dataset
-3. **Database Ingestion:** Python script loads data into PostgreSQL
-4. **Analytics Layer:** SQL queries generate KPIs and operational insights
-5. **Reporting Layer:** Excel dashboard with PivotTables and slicers for analysis
+\`\`\`
+raw.tickets (CSV → Postgres)
+│
+▼
+stg_tickets (dbt view — cleaning & enrichment)
+│
+├──► fct_ticket_performance (fact table)
+│ ├──► dim_agent_performance (agent KPIs)
+│ ├──► dim_category_trends (category analysis)
+│ └──► dim_daily_trends (time-series metrics)
+\`\`\`
+
+---
+
+## dbt Models
+
+### Staging Layer
+
+| Model         | Type | Description                                                                                                  |
+| ------------- | ---- | ------------------------------------------------------------------------------------------------------------ |
+| `stg_tickets` | View | Cleaned raw data with derived columns (priority order, day/hour extracts) and consistent SLA logic via macro |
+
+### Mart Layer
+
+| Model                    | Type  | Description                                                |
+| ------------------------ | ----- | ---------------------------------------------------------- |
+| `fct_ticket_performance` | Table | Core fact table with SLA status and time dimensions        |
+| `dim_agent_performance`  | Table | Agent-level KPIs: volume, resolution time, SLA breach rate |
+| `dim_category_trends`    | Table | Category × priority breakdown with breach analysis         |
+| `dim_daily_trends`       | Table | Daily time-series for operational trend reporting          |
+
+---
+
+## Data Quality & Testing
+
+- **23 built-in dbt tests:** uniqueness, not_null, accepted_values
+- **1 custom SQL test:** `assert_sla_breach_rate_under_100`
+- **1 reusable macro:** `calculate_sla_status` for consistent SLA logic across models
+- **Auto-generated documentation** with model lineage (DAG)
 
 ---
 
 ## Key Business Metrics
 
-- SLA Breach Rate (compliance monitoring)
-- Ticket volume by priority and category
-- Agent performance (resolution time and workload distribution)
-- Operational trends over time (daily ticket volume)
+| Metric                      | Source Model                                   |
+| --------------------------- | ---------------------------------------------- |
+| SLA Breach Rate             | `dim_agent_performance`, `dim_category_trends` |
+| Avg Resolution Time         | All mart models                                |
+| Ticket Volume by Priority   | `dim_category_trends`                          |
+| Agent Workload Distribution | `dim_agent_performance`                        |
+| Daily Ticket Trends         | `dim_daily_trends`                             |
 
 ---
 
-## How to Run Project
+## How to Run
 
-### 1. Install dependencies
+### Prerequisites
 
-```bash
-pip install -r requirements.txt
-```
+- Python 3.10+
+- PostgreSQL running locally
+- dbt installed: `pip install dbt-postgres`
 
----
+### 1. Generate and load data
 
-### 2. Generate synthetic dataset
-
-```bash
+\`\`\`bash
 python scripts/generate_data.py
-```
-
----
-
-### 3. Load data into PostgreSQL
-
-```bash
 python scripts/load_to_db.py
-```
+\`\`\`
 
----
+### 2. Run dbt pipeline
 
-### 4. Run SQL analytics
+\`\`\`bash
+cd dbt_ticket_analytics
+dbt build
+\`\`\`
 
-See:
+### 3. View documentation
 
-```
-sql/analytics_queries.sql
-```
-
----
-
-### 5. Excel Dashboard
-
-Open:
-
-```
-excel/ticket_analytics_dashboard.xlsx
-```
+\`\`\`bash
+dbt docs generate
+dbt docs serve
+\`\`\`
+Navigate to `http://localhost:8080` and click the lineage graph icon to explore the DAG.
 
 ---
 
 ## What This Project Demonstrates
 
-- End-to-end data pipeline design
-- SQL-based business analytics
-- Database integration (PostgreSQL)
-- Data cleaning and transformation
-- KPI-driven reporting systems
-- Excel-based operational dashboards
+- **Analytics Engineering:** dbt models with staging → mart architecture
+- **Data Testing:** Built-in and custom SQL tests for data quality
+- **Documentation:** Auto-generated docs with model lineage
+- **SQL Proficiency:** Window functions, CTEs, aggregations, macros
+- **Business Logic:** SLA calculations, time-series analysis, dimensional modeling
+- **Production Thinking:** Reusable macros, schema enforcement, tested pipelines
+
+---
+
+## Project Structure
+
+\`\`\`
+ticket-analytics-dashboard/
+├── data/ # Raw CSV data
+├── scripts/ # Python data generation & loading
+│ ├── generate_data.py
+│ └── load_to_db.py
+├── dbt_ticket_analytics/ # dbt project
+│ ├── models/
+│ │ ├── staging/
+│ │ │ ├── sources.yml
+│ │ │ ├── schema.yml
+│ │ │ └── stg_tickets.sql
+│ │ └── marts/
+│ │ ├── schema.yml
+│ │ ├── fct_ticket_performance.sql
+│ │ ├── dim_agent_performance.sql
+│ │ ├── dim_category_trends.sql
+│ │ └── dim_daily_trends.sql
+│ ├── macros/
+│ │ └── sla_status.sql
+│ ├── tests/
+│ │ └── assert_sla_breach_rate_under_100.sql
+│ └── dbt_project.yml
+├── sql/ # Legacy analytical queries
+├── excel/ # Legacy Excel dashboard
+└── README.md
+\`\`\`
