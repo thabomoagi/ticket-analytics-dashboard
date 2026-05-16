@@ -24,7 +24,6 @@ This project simulates a real-world support ticketing system and applies analyti
 
 ## Data Architecture
 
-\`\`\`
 raw.tickets (CSV → Postgres)
 │
 ▼
@@ -34,7 +33,6 @@ stg_tickets (dbt view — cleaning & enrichment)
 │ ├──► dim_agent_performance (agent KPIs)
 │ ├──► dim_category_trends (category analysis)
 │ └──► dim_daily_trends (time-series metrics)
-\`\`\`
 
 ---
 
@@ -88,65 +86,49 @@ stg_tickets (dbt view — cleaning & enrichment)
 
 ### 1. Generate and load data
 
-\`\`\`bash
+```bash
 python scripts/generate_data.py
 python scripts/load_to_db.py
-\`\`\`
-
-### 2. Run dbt pipeline
-
-\`\`\`bash
+2. Run dbt pipeline
 cd dbt_ticket_analytics
 dbt build
-\`\`\`
-
-### 3. View documentation
-
-\`\`\`bash
+3. View documentation
 dbt docs generate
 dbt docs serve
-\`\`\`
-Navigate to `http://localhost:8080` and click the lineage graph icon to explore the DAG.
-
----
+Navigate to http://localhost:8080 and click the lineage graph icon to explore the DAG.
 
 ## What This Project Demonstrates
-
-- **Analytics Engineering:** dbt models with staging → mart architecture
-- **Data Testing:** Built-in and custom SQL tests for data quality
-- **Documentation:** Auto-generated docs with model lineage
-- **SQL Proficiency:** Window functions, CTEs, aggregations, macros
-- **Business Logic:** SLA calculations, time-series analysis, dimensional modeling
-- **Production Thinking:** Reusable macros, schema enforcement, tested pipelines
-
----
+-Analytics Engineering: dbt models with staging → mart architecture
+-Data Testing: Built-in and custom SQL tests for data quality
+-Documentation: Auto-generated docs with model lineage
+-SQL Proficiency: Window functions, CTEs, aggregations, macros
+-Business Logic: SLA calculations, time-series analysis, dimensional modeling
+-Production Thinking: Reusable macros, schema enforcement, tested pipelines
 
 ## Project Structure
-
-\`\`\`
 ticket-analytics-dashboard/
-├── data/ # Raw CSV data
-├── scripts/ # Python data generation & loading
-│ ├── generate_data.py
-│ └── load_to_db.py
-├── dbt_ticket_analytics/ # dbt project
-│ ├── models/
-│ │ ├── staging/
-│ │ │ ├── sources.yml
-│ │ │ ├── schema.yml
-│ │ │ └── stg_tickets.sql
-│ │ └── marts/
-│ │ ├── schema.yml
-│ │ ├── fct_ticket_performance.sql
-│ │ ├── dim_agent_performance.sql
-│ │ ├── dim_category_trends.sql
-│ │ └── dim_daily_trends.sql
-│ ├── macros/
-│ │ └── sla_status.sql
-│ ├── tests/
-│ │ └── assert_sla_breach_rate_under_100.sql
-│ └── dbt_project.yml
-├── sql/ # Legacy analytical queries
-├── excel/ # Legacy Excel dashboard
+├── data/                      # Raw CSV data
+├── scripts/                   # Python data generation & loading
+│   ├── generate_data.py
+│   └── load_to_db.py
+├── dbt_ticket_analytics/      # dbt project
+│   ├── models/
+│   │   ├── staging/
+│   │   │   ├── sources.yml
+│   │   │   ├── schema.yml
+│   │   │   └── stg_tickets.sql
+│   │   └── marts/
+│   │       ├── schema.yml
+│   │       ├── fct_ticket_performance.sql
+│   │       ├── dim_agent_performance.sql
+│   │       ├── dim_category_trends.sql
+│   │       └── dim_daily_trends.sql
+│   ├── macros/
+│   │   └── sla_status.sql
+│   ├── tests/
+│   │   └── assert_sla_breach_rate_under_100.sql
+│   └── dbt_project.yml
+├── sql/                       # Legacy analytical queries
+├── excel/                     # Legacy Excel dashboard
 └── README.md
-\`\`\`
+```
