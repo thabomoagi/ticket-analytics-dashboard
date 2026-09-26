@@ -11,11 +11,13 @@ models:
       - name: priority
         tests:
           - accepted_values:
-              values: ['Low', 'Medium', 'High', 'Critical']
+              arguments:
+                values: ['Low', 'Medium', 'High', 'Critical']
       - name: sla_status
         tests:
           - accepted_values:
-              values: ['Met', 'Breached']
+              arguments:
+                values: ['Met', 'Breached']
       - name: resolution_hours
         tests:
           - not_null
@@ -49,7 +51,8 @@ models:
       - name: priority
         tests:
           - accepted_values:
-              values: ['Low', 'Medium', 'High', 'Critical']
+              arguments:
+                values: ['Low', 'Medium', 'High', 'Critical']
       - name: ticket_count
         tests:
           - not_null

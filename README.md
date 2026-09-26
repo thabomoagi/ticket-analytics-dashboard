@@ -119,7 +119,7 @@ python scripts/generate_data.py
 python scripts/load_to_db.py
 ```
 
-`generate_data.py` writes `data/tickets.csv`, and `load_to_db.py` loads that file into the `tickets` table, so run them in that order.
+`generate_data.py` writes `data/tickets.csv`, and `load_to_db.py` loads that file into the `tickets` table, so run them in that order. Re-running the loader drops and recreates `tickets`, which also drops any dbt views built on it, so run `dbt build` (step 6) afterwards to rebuild them.
 
 ### 5. Configure the dbt profile
 
