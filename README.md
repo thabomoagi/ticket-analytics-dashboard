@@ -89,23 +89,38 @@ stg_tickets (dbt view — cleaning & enrichment)
 ```bash
 python scripts/generate_data.py
 python scripts/load_to_db.py
-2. Run dbt pipeline
+```
+
+### 2. Run dbt pipeline
+
+```bash
 cd dbt_ticket_analytics
 dbt build
-3. View documentation
+```
+
+### 3. View documentation
+
+```bash
 dbt docs generate
 dbt docs serve
+```
+
 Navigate to http://localhost:8080 and click the lineage graph icon to explore the DAG.
 
 ## What This Project Demonstrates
--Analytics Engineering: dbt models with staging → mart architecture
--Data Testing: Built-in and custom SQL tests for data quality
--Documentation: Auto-generated docs with model lineage
--SQL Proficiency: Window functions, CTEs, aggregations, macros
--Business Logic: SLA calculations, time-series analysis, dimensional modeling
--Production Thinking: Reusable macros, schema enforcement, tested pipelines
+
+- **Analytics Engineering:** dbt models with staging → mart architecture
+- **Data Testing:** Built-in and custom SQL tests for data quality
+- **Documentation:** Auto-generated docs with model lineage
+- **SQL Proficiency:** Window functions, CTEs, aggregations, macros
+- **Business Logic:** SLA calculations, time-series analysis, dimensional modeling
+- **Production Thinking:** Reusable macros, schema enforcement, tested pipelines
+
+---
 
 ## Project Structure
+
+```
 ticket-analytics-dashboard/
 ├── data/                      # Raw CSV data
 ├── scripts/                   # Python data generation & loading
