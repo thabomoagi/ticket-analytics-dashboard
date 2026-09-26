@@ -6,6 +6,15 @@ An end-to-end analytics engineering project that transforms raw IT support ticke
 
 This project simulates a real-world support ticketing system and applies analytics engineering best practices using **dbt, PostgreSQL, and Python**.
 
+## At a Glance
+
+| | |
+| --- | --- |
+| dbt models | 1 staging view + 4 mart tables |
+| Data quality | **23 built-in dbt tests + 1 custom SQL test** |
+| Documentation | Auto-generated dbt docs with model lineage |
+| Reusable logic | 1 macro (`calculate_sla_status`) shared across models |
+
 ---
 
 ## Tech Stack
@@ -82,23 +91,69 @@ stg_tickets (dbt view — cleaning & enrichment)
 
 - Python 3.10+
 - PostgreSQL running locally
-- dbt installed: `pip install dbt-postgres`
 
-### 1. Generate and load data
+### 1. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Create the database
+
+```bash
+psql -U postgres -c "CREATE DATABASE ticket_db;"
+```
+
+### 3. Create the .env file
+
+`scripts/load_to_db.py` reads the database password from the environment instead of hardcoding it. Create a `.env` file in the project root (it is gitignored):
+
+```
+DB_PASSWORD=your_password_here
+```
+
+### 4. Generate and load the data
 
 ```bash
 python scripts/generate_data.py
 python scripts/load_to_db.py
 ```
 
-### 2. Run dbt pipeline
+`generate_data.py` writes `data/tickets.csv`, and `load_to_db.py` loads that file into the `tickets` table, so run them in that order.
+
+### 5. Configure the dbt profile
+
+Create `~/.dbt/profiles.yml`:
+
+```yaml
+ticket_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      port: 5432
+      user: postgres
+      pass: "{{ env_var('DB_PASSWORD') }}"
+      dbname: ticket_db
+      schema: analytics
+      threads: 4
+```
+
+The profile reads the password from `DB_PASSWORD`, so no credential is stored in it. Export that variable in the shell you run dbt from:
+
+```bash
+export DB_PASSWORD=your_password_here        # PowerShell: $env:DB_PASSWORD = "your_password_here"
+```
+
+### 6. Run the pipeline
 
 ```bash
 cd dbt_ticket_analytics
 dbt build
 ```
 
-### 3. View documentation
+### 7. View the documentation
 
 ```bash
 dbt docs generate
@@ -143,7 +198,11 @@ ticket-analytics-dashboard/
 │   ├── tests/
 │   │   └── assert_sla_breach_rate_under_100.sql
 │   └── dbt_project.yml
-├── sql/                       # Legacy analytical queries
-├── excel/                     # Legacy Excel dashboard
+├── sql/                       # Earlier iteration: standalone SQL queries
+├── excel/                     # Earlier iteration: Excel dashboard (pivot charts and slicers)
 └── README.md
 ```
+
+## Project History
+
+The `excel/` and `sql/` folders are an earlier iteration of this project, built before the dbt layer: a standalone Excel dashboard (pivot charts and slicers) and a set of hand-written analytical queries against the raw table. The dbt models supersede both, and they are kept here as a record of that work.
